@@ -5,7 +5,7 @@
   "repository": "https://github.com/evfool/language-vala",
   "license": "MIT",
   "engines": {
-    "atom": ">0.50.0"
+    "atom": ">=1.0.0 <2.0.0"
   },
   "dependencies": {}
 }
