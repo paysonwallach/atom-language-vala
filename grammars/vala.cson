@@ -1,744 +1,1493 @@
+name: "Vala"
 comment: '''
-  Based heavily on the Java bundle's language syntax. TODO:
-  * Closures (In progress)
-  * Delegates
-  * Annotations
-  * Error domains
-  * Named arguments
-  * Array slicing, negative indexes, multidimensional
-  * construct blocks
-  * lock blocks?
-  * regex literals
-  * DocBlock syntax highlighting. (Currently importing javadoc)
-  * Folding rule for comments.
+  Based heavily on the C# bundle's language sytnax.
+  TODO:
+    & Fold constant declarations into field declarations
+    * Lock blocks (?)
+    * Preprocessor directives
 '''
 fileTypes: [
   "vala"
   "vapi"
 ]
+scopeName: "source.vala"
 foldingStartMarker: "(\\{\\s*(//.*)?$|^\\s*// \\{\\{\\{)"
 foldingStopMarker: "^\\s*(\\}|// \\}\\}\\}$)"
-name: "Vala"
 patterns: [
   {
-    captures:
-      "1":
-        name: "keyword.other.using.vala"
-      "2":
-        name: "storage.modifier.using.vala"
-      "3":
-        name: "punctuation.terminator.vala"
-    match: "^\\s*(using)\\b(?:\\s*([^ ;$]+)\\s*(;)?)?"
-    name: "meta.using.vala"
+    include: "#comment"
   }
   {
-    include: "#code"
+    include: "#using-directive"
+  }
+  {
+    include: "#declarations"
   }
 ]
 repository:
-  "all-types":
+  annotation:
     patterns: [
       {
-        include: "#primitive-arrays"
-      }
-      {
-        include: "#primitive-types"
-      }
-      {
-        include: "#object-types"
-      }
-    ]
-  annotations:
-    patterns: [
-      {
-        begin: "(@[^ (]+)(\\()"
+        begin: "(\\[)"
         beginCaptures:
           "1":
-            name: "storage.type.annotation.vala"
-          "2":
             name: "punctuation.definition.annotation-arguments.begin.vala"
-        end: "(\\))"
+        end: "(\\])"
         endCaptures:
           "1":
             name: "punctuation.definition.annotation-arguments.end.vala"
         name: "meta.declaration.annotation.vala"
         patterns: [
           {
-            captures:
-              "1":
-                name: "constant.other.key.vala"
-              "2":
-                name: "keyword.operator.assignment.vala"
-            match: "(\\w*)\\s*(=)"
-          }
-          {
-            include: "#code"
+            include: "#expression"
           }
           {
             match: ","
-            name: "punctuation.seperator.property.vala"
+            name: "punctuation.separator.comma.vala"
+          }
+        ]
+      }
+    ]
+  declarations:
+    patterns: [
+      {
+        include: "#namespace-declaration"
+      }
+      {
+        include: "#type-declarations"
+      }
+      {
+        include: "#constant-declaration"
+      }
+      {
+        include: "#field-declaration"
+      }
+      {
+        include: "#punctuation-semicolon"
+      }
+    ]
+  "type-declarations":
+    patterns: [
+      {
+        include: "#comment"
+      }
+      {
+        include: "#annotation"
+      }
+      {
+        include: "#storage-modifier"
+      }
+      {
+        include: "#class-declaration"
+      }
+      {
+        include: "#delegate-declaration"
+      }
+      {
+        include: "#enum-declaration"
+      }
+      {
+        include: "#interface-declaration"
+      }
+      {
+        include: "#struct-declaration"
+      }
+      {
+        include: "#method-declaration"
+      }
+      {
+        include: "#punctuation-semicolon"
+      }
+    ]
+  "class-or-struct-members":
+    patterns: [
+      {
+        include: "#comment"
+      }
+      {
+        include: "#annotation"
+      }
+      {
+        include: "#storage-modifier"
+      }
+      {
+        include: "#type-declarations"
+      }
+      {
+        include: "#property-declaration"
+      }
+      {
+        include: "#constant-declaration"
+      }
+      {
+        include: "#field-declaration"
+      }
+      {
+        include: "#variable-initializer"
+      }
+      {
+        include: "#constructor-declaration"
+      }
+      {
+        include: "#gobject-constructor-declaration"
+      }
+      {
+        include: "#destructor-declaration"
+      }
+      {
+        include: "#method-declaration"
+      }
+      {
+        include: "#punctuation-semicolon"
+      }
+    ]
+  "interface-members":
+    patterns: [
+      {
+        include: "#comment"
+      }
+      {
+        include: "#property-declaration"
+      }
+      {
+        include: "#method-declaration"
+      }
+      {
+        include: "#punctuation-semicolon"
+      }
+    ]
+  statement:
+    patterns: [
+      {
+        include: "#comment"
+      }
+      {
+        include: "#while-statement"
+      }
+      {
+        include: "#do-statement"
+      }
+      {
+        include: "#for-statement"
+      }
+      {
+        include: "#foreach-statement"
+      }
+      {
+        include: "#if-statement"
+      }
+      {
+        include: "#else-part"
+      }
+      {
+        include: "#switch-statement"
+      }
+      {
+        include: "#return-statement"
+      }
+      {
+        include: "#break-or-continue-statement"
+      }
+      {
+        include: "#throw-statement"
+      }
+      {
+        include: "#try-statement"
+      }
+      {
+        include: "#local-declaration"
+      }
+      {
+        include: "#block"
+      }
+      {
+        include: "#expression"
+      }
+      {
+        include: "#punctuation-semicolon"
+      }
+    ]
+  expression:
+    patterns: [
+      {
+        include: "#comment"
+      }
+      {
+        include: "#throw-expression"
+      }
+      {
+        include: "#interpolated-string"
+      }
+      {
+        include: "#this-or-base-expression"
+      }
+      {
+        include: "#conditional-operator"
+      }
+      {
+        include: "#expression-operators"
+      }
+      {
+        include: "#anonymous-method-expression"
+      }
+      {
+        include: "#object-creation-expression"
+      }
+      {
+        include: "#invocation-expression"
+      }
+      {
+        include: "#storage-access-expression"
+      }
+      {
+        include: "#object-access-expression"
+      }
+      {
+        include: "#element-access-expression"
+      }
+      {
+        include: "#cast-expression"
+      }
+      {
+        include: "#literal"
+      }
+      {
+        include: "#parenthesized-expression"
+      }
+      {
+        include: "#initializer-expression"
+      }
+      {
+        include: "#identifier"
+      }
+    ]
+  "using-directive":
+    patterns: [
+      {
+        begin: "\\b(using)\\s+"
+        beginCaptures:
+          "1":
+            name: "keyword.other.using.vala"
+        end: "(?=;)"
+        patterns: [
+          {
+            include: "#type"
+          }
+        ]
+      }
+    ]
+  "namespace-declaration":
+    begin: "\\b(namespace)\\s+"
+    beginCaptures:
+      "1":
+        name: "keyword.other.namespace.vala"
+    end: "(?<=\\})"
+    patterns: [
+      {
+        include: "#comment"
+      }
+      {
+        match: "@?[_[:alpha:]\\.][_[:alnum:]\\.]*"
+        name: "entity.name.type.namespace.vala"
+      }
+      {
+        include: "#punctuation-accessor"
+      }
+      {
+        begin: "\\{"
+        beginCaptures:
+          "0":
+            name: "punctuation.curlybrace.open.vala"
+        end: "\\}"
+        endCaptures:
+          "0":
+            name: "punctuation.curlybrace.close.vala"
+        patterns: [
+          {
+            include: "#declarations"
+          }
+          {
+            include: "#punctuation-semicolon"
+          }
+        ]
+      }
+    ]
+  "storage-modifier":
+    match: "(?<!\\.)\\b(abstract|async|const|internal|out|override|owned|private|protected|public|ref|static|unowned|virtual|weak)\\b"
+    name: "storage.modifier.vala"
+  "class-declaration":
+    begin: "(?=\\bclass\\b)"
+    end: "(?<=\\})"
+    patterns: [
+      {
+        begin: '''
+          (?x)
+          \\b(class)\\b\\s+
+          (@?[_[:alpha:]\\.][_[:alnum:]\\.]*)\\s*
+        '''
+        beginCaptures:
+          "1":
+            name: "keyword.other.class.vala"
+          "2":
+              patterns: [
+                {
+                  match: "(@?[_[:alpha:]][_[:alnum:]]*)\\s*"
+                  captures:
+                    "1":
+                      name: "meta.definition.class.vala"
+                }
+                {
+                  match: "(@?[_[:alpha:]][_[:alnum:]]*)\\s*(\\.)"
+                  captures:
+                    "1":
+                      name: "meta.definition.class.vala"
+                    "2":
+                      name: "punctuation.accessor.vala"
+                }
+                {
+                  match: "(\\.)\\s*(@?[_[:alpha:]][_[:alnum:]]*)"
+                  captures:
+                    "1":
+                      name: "punctuation.accessor.vala"
+                    "2":
+                      name: "meta.definition.class.vala"
+                }
+                {
+                  name: "entity.name.type.vala"
+                  match: "@?[_[:alpha:]][_[:alnum:]]*"
+                }
+              ]
+        end: "(?=\\{)"
+        patterns: [
+          {
+            include: "#comment"
+          }
+          {
+            include: "#type-parameter-list"
+          }
+          {
+            include: "#base-type"
           }
         ]
       }
       {
-        match: "@\\w*"
-        name: "storage.type.annotation.vala"
+        begin: "\\{"
+        beginCaptures:
+          "0":
+            name: "punctuation.curlybrace.open.vala"
+        end: "\\}"
+        endCaptures:
+          "0":
+            name: "punctuation.curlybrace.close.vala"
+        patterns: [
+          {
+            include: "#class-or-struct-members"
+          }
+        ]
+      }
+      {
+        include: "#comment"
       }
     ]
-  "anonymous-classes-and-new":
-    begin: "\\bnew\\b"
+  "delegate-declaration":
+    begin: '''
+      (?x)
+      (?:\\b(delegate)\\b)\\s+
+      (?<typename>
+        (?:
+          (?:
+            (?:(?<identifier>@?[_[:alpha:]][_[:alnum:]]*)\\s*)?
+            (?<nameandtypeargs> # identifier + type arguments (if any)
+              \\g<identifier>\\s*
+              (?<typeargs>\\s*<(?:[^<>]|\\g<typeargs>)+>\\s*)?
+            )
+            (?:\\s*\\.\\s*\\g<nameandtypeargs>)* | # Are there any more names being dotted into?
+            (?<tuple>\\s*\\((?:[^\\(\\)]|\\g<tuple>)+\\))
+          )
+          (?:\\s*\\?\\s*)? # nullable suffix?
+          (?:\\s*\\[(?:\\s*,\\s*)*\\]\\s*)* # array suffix?
+        )
+      )\\s+
+      (\\g<identifier>)\\s*
+      (<([^<>]+)>)?\\s*
+      (?=\\()
+    '''
+    beginCaptures:
+      "1":
+        name: "keyword.other.delegate.vala"
+      "2":
+        patterns: [
+          {
+            include: "#type"
+          }
+        ]
+      "7":
+        name: "entity.name.type.delegate.vala"
+      "8":
+        patterns: [
+          {
+            include: "#type-parameter-list"
+          }
+        ]
+    end: "(?=;)"
+    patterns: [
+      {
+        include: "#comment"
+      }
+      {
+        include: "#parenthesized-parameter-list"
+      }
+    ]
+  "enum-declaration":
+    begin: "(?=\\benum\\b)"
+    end: "(?<=\\})"
+    patterns: [
+      {
+        begin: "(?=enum)"
+        end: "(?=\\{)"
+        patterns: [
+          {
+            include: "#comment"
+          }
+          {
+            match: "(enum)\\s+(@?[_[:alpha:]\\.][_[:alnum:]\\.]*)"
+            captures:
+              "1":
+                name: "keyword.other.enum.vala"
+              "2":
+                name: "entity.name.type.enum.vala"
+          }
+          {
+            begin: ":"
+            beginCaptures:
+              "0":
+                name: "punctuation.separator.colon.vala"
+            end: "(?=\\{)"
+            patterns: [
+              {
+                include: "#type"
+              }
+            ]
+          }
+        ]
+      }
+      {
+        begin: "\\{"
+        beginCaptures:
+          "0":
+            name: "punctuation.curlybrace.open.vala"
+        end: "\\}"
+        endCaptures:
+          "0":
+            name: "punctuation.curlybrace.close.vala"
+        patterns: [
+          {
+            include: "#comment"
+          }
+          {
+            include: "#punctuation-comma"
+          }
+          {
+            begin: "@?[_[:alpha:]][_[:alnum:]]*"
+            beginCaptures:
+              "0":
+                name: "entity.name.variable.enum-member.vala"
+            end: "(?=(,|\\}))"
+            patterns: [
+              {
+                include: "#comment"
+              }
+              {
+                include: "#variable-initializer"
+              }
+            ]
+          }
+        ]
+      }
+      {
+        include: "#comment"
+      }
+    ]
+  "interface-declaration":
+    begin: "(?=\\binterface\\b)"
+    end: "(?<=\\})"
+    patterns: [
+      {
+        begin: '''
+          (?x)
+          (interface)\\b\\s+
+          (@?[_[:alpha:]][_[:alnum:]]*)
+        '''
+        beginCaptures:
+          "1":
+            name: "keyword.other.interface.vala"
+          "2":
+            name: "entity.name.type.interface.vala"
+        end: "(?=\\{)"
+        patterns: [
+          {
+            include: "#comment"
+          }
+          {
+            include: "#type-parameter-list"
+          }
+          {
+            include: "#base-type"
+          }
+        ]
+      }
+      {
+        begin: "\\{"
+        beginCaptures:
+          "0":
+            name: "punctuation.curlybrace.open.vala"
+        end: "\\}"
+        endCaptures:
+          "0":
+            name: "punctuation.curlybrace.close.vala"
+        patterns: [
+          {
+            include: "#interface-members"
+          }
+        ]
+      }
+      {
+        include: "#comment"
+      }
+    ]
+  "struct-declaration":
+    begin: "(?=\\bstruct\\b)"
+    end: "(?<=\\})"
+    patterns: [
+      {
+        begin: '''
+          (?x)
+          (struct)\\b\\s+
+          (@?[_[:alpha:]][_[:alnum:]]*)
+        '''
+        beginCaptures:
+          "1":
+            name: "keyword.other.struct.vala"
+          "2":
+            name: "entity.name.type.struct.vala"
+        end: "(?=\\{)"
+        patterns: [
+          {
+            include: "#comment"
+          }
+          {
+            include: "#type-parameter-list"
+          }
+        ]
+      }
+      {
+        begin: "\\{"
+        beginCaptures:
+          "0":
+            name: "punctuation.curlybrace.open.vala"
+        end: "\\}"
+        endCaptures:
+          "0":
+            name: "punctuation.curlybrace.close.vala"
+        patterns: [
+          {
+            include: "#class-or-struct-members"
+          }
+        ]
+      }
+      {
+        include: "#comment"
+      }
+    ]
+  "type-parameter-list":
+    begin: "\\<"
     beginCaptures:
       "0":
-        name: "keyword.control.new.vala"
-    end: "(?<=\\)|\\])(?!\\s*{)|(?<=})|(?=;)"
-    patterns: [
-      {
-        begin: "(\\w+)\\s*(?=\\[)"
-        beginCaptures:
-          "1":
-            name: "storage.type.vala"
-        end: "}|(?=;|\\))"
-        patterns: [
-          {
-            begin: "\\["
-            end: "\\]"
-            patterns: [
-              {
-                include: "#code"
-              }
-            ]
-          }
-          {
-            begin: "{"
-            end: "(?=})"
-            patterns: [
-              {
-                include: "#code"
-              }
-            ]
-          }
-        ]
-      }
-      {
-        begin: "(?=\\w.*\\()"
-        end: "(?<=\\))"
-        patterns: [
-          {
-            include: "#object-types"
-          }
-          {
-            begin: "\\("
-            beginCaptures:
-              "1":
-                name: "storage.type.vala"
-            end: "\\)"
-            patterns: [
-              {
-                include: "#code"
-              }
-            ]
-          }
-        ]
-      }
-      {
-        begin: "{"
-        end: "}"
-        name: "meta.inner-class.vala"
-        patterns: [
-          {
-            include: "#class-body"
-          }
-        ]
-      }
-    ]
-  assertions:
-    patterns: [
-      {
-        begin: "\\b(assert|requires|ensures)\\s"
-        beginCaptures:
-          "1":
-            name: "keyword.control.assert.vala"
-        end: "$"
-        name: "meta.declaration.assertion.vala"
-        patterns: [
-          {
-            match: ":"
-            name: "keyword.operator.assert.expression-seperator.vala"
-          }
-          {
-            include: "#code"
-          }
-        ]
-      }
-    ]
-  class:
-    begin: "(?=\\w?[\\w\\s]*(?:class|(?:@)?interface|enum|struct|namespace)\\s+\\w+)"
-    comment: "attempting to put namespace in here."
-    end: "}"
+        name: "punctuation.definition.typeparameters.begin.vala"
+    end: "\\>"
     endCaptures:
       "0":
-        name: "punctuation.section.class.end.vala"
-    name: "meta.class.vala"
+        name: "punctuation.definition.typeparameters.end.vala"
     patterns: [
       {
-        include: "#storage-modifiers"
-      }
-      {
-        include: "#comments"
-      }
-      {
+        match: "(@?[_[:alpha:]][_[:alnum:]]*)\\b"
         captures:
           "1":
-            name: "storage.modifier.vala"
+            name: "entity.name.type.typeparameter.vala"
+      }
+      {
+        include: "#comment"
+      }
+      {
+        include: "#punctuation-comma"
+      }
+    ]
+  "base-type":
+    begin: ":"
+    beginCaptures:
+      "0":
+        name: "punctuation.separator.colon.vala"
+    end: "(?=\\{|where)"
+    patterns: [
+      {
+        match: "(@?[_[:alpha:]][_[:alnum:]]*)\\s*"
+        captures:
+          "1":
+            name: "entity.name.class.parent.base.vala"
+      }
+      {
+        match: "(@?[_[:alpha:]][_[:alnum:]]*)\\s*(\\.)"
+        captures:
+          "1":
+            name: "entity.name.class.parent.base.vala"
           "2":
-            name: "entity.name.type.class.vala"
-        match: "(class|(?:@)?interface|enum|struct|namespace)\\s+([\\w\\.]+)"
-        name: "meta.class.identifier.vala"
+            name: "punctuation.accessor.vala"
       }
       {
-        begin: ":"
-        beginCaptures:
-          "0":
-            name: "storage.modifier.extends.vala"
-        end: "(?={|,)"
-        name: "meta.definition.class.inherited.classes.vala"
-        patterns: [
-          {
-            include: "#object-types-inherited"
-          }
-          {
-            include: "#comments"
-          }
-        ]
-      }
-      {
-        begin: "(,)\\s"
-        beginCaptures:
-          "1":
-            name: "storage.modifier.implements.vala"
-        end: "(?=\\{)"
-        name: "meta.definition.class.implemented.interfaces.vala"
-        patterns: [
-          {
-            include: "#object-types-inherited"
-          }
-          {
-            include: "#comments"
-          }
-        ]
-      }
-      {
-        begin: "{"
-        end: "(?=})"
-        name: "meta.class.body.vala"
-        patterns: [
-          {
-            include: "#class-body"
-          }
-        ]
-      }
-    ]
-  "class-body":
-    patterns: [
-      {
-        include: "#comments"
-      }
-      {
-        include: "#class"
-      }
-      {
-        include: "#enums"
-      }
-      {
-        include: "#annotations"
-      }
-      {
-        include: "#storage-modifiers"
-      }
-      {
-        include: "#objects"
-      }
-      {
-        include: "#properties"
-      }
-      {
-        include: "#methods"
-      }
-      {
-        include: "#code"
-      }
-    ]
-  code:
-    patterns: [
-      {
-        include: "#comments"
-      }
-      {
-        include: "#class"
-      }
-      {
-        begin: "{"
-        end: "}"
-        patterns: [
-          {
-            include: "#code"
-          }
-        ]
-      }
-      {
-        include: "#assertions"
-      }
-      {
-        include: "#parens"
-      }
-      {
-        include: "#constants-and-special-vars"
-      }
-      {
-        include: "#anonymous-classes-and-new"
-      }
-      {
-        include: "#keywords"
-      }
-      {
-        include: "#storage-modifiers"
-      }
-      {
-        include: "#strings"
-      }
-      {
-        include: "#all-types"
-      }
-      {
-        include: "#objects"
-      }
-      {
-        include: "#properties"
-      }
-      {
-        include: "#methods"
-      }
-    ]
-  comments:
-    patterns: [
-      {
-        captures:
-          "0":
-            name: "punctuation.definition.comment.vala"
-        match: "/\\*\\*/"
-        name: "comment.block.empty.vala"
-      }
-      {
-        include: "text.html.javadoc"
-      }
-      {
-        include: "#comments-inline"
-      }
-    ]
-  "comments-inline":
-    patterns: [
-      {
-        begin: "/\\*"
-        captures:
-          "0":
-            name: "punctuation.definition.comment.vala"
-        end: "\\*/"
-        name: "comment.block.vala"
-      }
-      {
+        match: "(\\.)\\s*(@?[_[:alpha:]][_[:alnum:]]*)"
         captures:
           "1":
-            name: "comment.line.double-slash.vala"
+            name: "punctuation.accessor.vala"
           "2":
-            name: "punctuation.definition.comment.vala"
-        match: "\\s*((//).*$\\n?)"
+            name: "entity.name.class.parent.subclass.vala"
+      }
+      {
+        match: "@?[_[:alpha:]][_[:alnum:]]*"
+        name: "entity.name.type.vala"
+      }
+      {
+        include: "#punctuation-comma"
       }
     ]
-  "constants-and-special-vars":
-    patterns: [
-      {
-        match: "\\b(true|false|null)\\b"
-        name: "constant.language.vala"
-      }
-      {
-        match: "\\b(this|base)\\b"
-        name: "variable.language.vala"
-      }
-      {
-        match: "\\b((0(x|X)[0-9a-fA-F]*)|(([0-9]+\\.?[0-9]*)|(\\.[0-9]+))((e|E)(\\+|-)?[0-9]+)?)([LlFfUuDd]|UL|ul)?\\b"
-        name: "constant.numeric.vala"
-      }
-      {
-        captures:
-          "1":
-            name: "keyword.operator.dereference.vala"
-        match: "(\\.)?\\b([A-Z][A-Z0-9_]+)(?!<|\\.class|\\s*\\w+\\s*=)\\b"
-        name: "constant.other.vala"
-      }
-    ]
-  enums:
-    begin: "^(?=\\s*[A-Z0-9_]+\\s*({|\\(|,))"
-    end: "(?=;|})"
-    patterns: [
-      {
-        include: "#comments"
-      }
-      {
-        begin: "\\w+"
-        beginCaptures:
-          "0":
-            name: "constant.other.enum.vala"
-        end: "(?=,|;|})"
-        name: "meta.enum.vala"
+  "field-declaration":
+    begin: '''
+      (?x)
+      (?<typename>
+        (?:
+          (?:
+            (?:(?<identifier>@?[_[:alpha:]][_[:alnum:]]*)\\s*)?
+            (?<nameandtypeargs> # identifier + type arguments (if any)
+              \\g<identifier>\\s*
+              (?<typeargs>\\s*<(?:[^<>]|\\g<typeargs>)+>\\s*)?
+            )
+            (?:\\s*\\.\\s*\\g<nameandtypeargs>)* | # Are there any more names being dotted into?
+            (?<tuple>\\s*\\((?:[^\\(\\)]|\\g<tuple>)+\\))
+          )
+          (?:\\s*\\?\\s*)? # nullable suffix?
+          (?:\\s*\\[(?:\\s*,\\s*)*\\]\\s*)* # array suffix?
+        )
+      )\\s+
+      (\\g<identifier>)\\s* # first field name
+      (?!=>|==)(?=,|;|=|$)
+    '''
+    beginCaptures:
+      "1":
         patterns: [
           {
-            include: "#parens"
-          }
-          {
-            begin: "{"
-            end: "}"
-            patterns: [
-              {
-                include: "#class-body"
-              }
-            ]
+            include: "#type"
           }
         ]
-      }
-    ]
-  keywords:
+      "6":
+        name: "variable.other.vala"
+    end: "(?=;)"
     patterns: [
       {
-        match: "\\b(try|catch|finally|throw)\\b"
-        name: "keyword.control.catch-exception.vala"
+        match: "@?[_[:alpha:]][_[:alnum:]]*"
+        name: "variable.other.vala"
       }
       {
-        match: "\\?|:|\\?\\?"
-        name: "keyword.control.vala"
+        include: "#punctuation-comma"
       }
       {
-        match: "\\b(return|break|case|continue|default|do|while|for|foreach|switch|if|else|in|yield|get|set|value|construct)\\b"
-        name: "keyword.control.vala"
+        include: "#comment"
       }
       {
-        match: "\\b(typeof|is|as)\\b"
-        name: "keyword.operator.vala"
+        include: "#variable-initializer"
       }
       {
-        match: "(==|!=|<=|>=|<>|<|>)"
-        name: "keyword.operator.comparison.vala"
-      }
-      {
-        match: "(=>*)"
-        name: "keyword.operator.assignment.vala"
-      }
-      {
-        match: "(\\-\\-|\\+\\+)"
-        name: "keyword.operator.increment-decrement.vala"
-      }
-      {
-        match: "(\\-|\\+|\\*|\\/|%)"
-        name: "keyword.operator.arithmetic.vala"
-      }
-      {
-        match: "(!|&&|\\|\\|)"
-        name: "keyword.operator.logical.vala"
-      }
-      {
-        match: "(?<=\\S)\\.(?=\\S)"
-        name: "keyword.operator.dereference.vala"
-      }
-      {
-        match: ";"
-        name: "punctuation.terminator.vala"
-      }
-      {
-        match: "(owned|unowned)"
-        name: "keyword.operator.ownership"
-      }
-      {
-        name: "keyword.vala"
-        match: "(?<=^|[^@\\w\\.])(as|do|if|in|is|for|get|new|out|ref|set|try|var|base|case|else|enum|lock|null|this|true|void|weak|async|break|catch|class|const|false|owned|throw|using|while|yield|delete|extern|inline|params|public|return|sealed|signal|sizeof|static|struct|switch|throws|typeof|unlock|default|dynamic|ensures|finally|foreach|private|unowned|virtual|abstract|continue|delegate|internal|override|requires|volatile|construct|interface|namespace|protected|errordomain)\\b"
-      }
-      {
-        name: "keyword.vala"
-        match: "(?<=^|[^@\\w\\.])(bool|double|float|unichar|char|uchar|int|uint|long|ulong|short|ushort|size_t|ssize_t|string|void|signal|int8|int16|int32|int64|uint8|uint16|uint32|uint64)\\b"
-      }
-      {
-        match: "(#if|#else|#endif)"
-        name: "keyword.vala"
+        include: "#class-or-struct-members"
       }
     ]
-  methods:
-    begin: "(?!new)(?=\\w.*\\s+)(?=[^=]+\\()"
-    end: "}|(?=;)"
-    name: "meta.method.vala"
+  "property-declaration":
+    begin: '''
+      (?x)
+
+      # The negative lookahead below ensures that we don't match nested types
+      # or other declarations as properties.
+      (?![[:word:][:space:]]*\\b(?:class|interface|struct|enum)\\b)
+
+      (?<returntype>
+        (?<typename>
+          (?:
+            (?:
+              (?:(?<identifier>@?[_[:alpha:]][_[:alnum:]]*)\\s*)?
+              (?<nameandtypeargs> # identifier + type arguments (if any)
+                \\g<identifier>\\s*
+                (?<typeargs>\\s*<(?:[^<>]|\\g<typeargs>)+>\\s*)?
+              )
+              (?:\\s*\\.\\s*\\g<nameandtypeargs>)* | # Are there any more names being dotted into?
+              (?<tuple>\\s*\\((?:[^\\(\\)]|\\g<tuple>)+\\))
+            )
+            (?:\\s*\\?\\s*)? # nullable suffix?
+            (?:\\s*\\[(?:\\s*,\\s*)*\\]\\s*)* # array suffix?
+          )
+        )\\s+
+      )
+      (?<interfacename>\\g<typename>\\s*\\.\\s*)?
+      (?<propertyname>\\g<identifier>)\\s*
+      (?=\\{|=>|$)
+    '''
+    beginCaptures:
+      "1":
+        patterns: [
+          {
+            include: "#type"
+          }
+        ]
+      "7":
+        patterns: [
+          {
+            include: "#type"
+          }
+          {
+            include: "#punctuation-accessor"
+          }
+        ]
+      "8":
+        name: "variable.other.vala"
+    end: "(?<=\\})|(?=;)"
     patterns: [
       {
-        include: "#storage-modifiers"
+        include: "#comment"
       }
       {
-        include: "#objects"
+        include: "#property-accessors"
       }
       {
-        include: "#properties"
+        include: "#expression-body"
       }
       {
-        begin: "([\\~\\w]+)\\s*\\("
-        beginCaptures:
+        include: "#variable-initializer"
+      }
+      {
+        include: "#class-or-struct-members"
+      }
+    ]
+  "property-accessors":
+    begin: "\\{"
+    beginCaptures:
+      "0":
+        name: "punctuation.curlybrace.open.vala"
+    end: "\\}"
+    endCaptures:
+      "0":
+        name: "punctuation.curlybrace.close.vala"
+    patterns: [
+      {
+        include: "#comment"
+      }
+      {
+        match: "\\b(internal|private|protected|public)\\b"
+        name: "storage.modifier.vala"
+      }
+      {
+        match: "\\b(get)\\b"
+        name: "keyword.other.get.vala"
+      }
+      {
+        match: "\\b(set)\\b"
+        name: "keyword.other.set.vala"
+      }
+      {
+        include: "#expression-body"
+      }
+      {
+        include: "#block"
+      }
+      {
+        include: "#punctuation-semicolon"
+      }
+    ]
+  "method-declaration":
+    begin: '''
+      (?x)
+      (?<returntype>
+        (?<typename>
+          (?:
+            (?:ref\\s+(?:readonly\\s+)?)?   # ref return
+            (?:
+              (?:(?<identifier>@?[_[:alpha:]][_[:alnum:]]*)\\s*)?
+              (?<nameandtypeargs> # identifier + type arguments (if any)
+                \\g<identifier>\\s*
+                (?<typeargs>\\s*<(?:[^<>]|\\g<typeargs>)+>\\s*)?
+              )
+              (?:\\s*\\.\\s*\\g<nameandtypeargs>)* | # Are there any more names being dotted into?
+              (?<tuple>\\s*\\((?:[^\\(\\)]|\\g<tuple>)+\\))
+            )
+            (?:\\s*\\?\\s*)? # nullable suffix?
+            (?:\\s*\\[(?:\\s*,\\s*)*\\]\\s*)* # array suffix?
+          )
+        )\\s+
+      )
+      (?<interfacename>\\g<typename>\\s*\\.\\s*)?
+      (\\g<identifier>)\\s*
+      (<([^<>]+)>)?\\s*
+      (?=\\()
+    '''
+    beginCaptures:
+      "1":
+        patterns: [
+          {
+            include: "#type"
+          }
+        ]
+      "7":
+        patterns: [
+          {
+            include: "#type"
+          }
+          {
+            include: "#punctuation-accessor"
+          }
+        ]
+      "8":
+        name: "entity.name.function.vala"
+      "9":
+        patterns: [
+          {
+            include: "#type-parameter-list"
+          }
+        ]
+    end: "(?<=\\})|(?=;)"
+    patterns: [
+      {
+        include: "#comment"
+      }
+      {
+        include: "#parenthesized-parameter-list"
+      }
+      {
+        include: "#throws-list"
+      }
+      {
+        include: "#expression-body"
+      }
+      {
+        include: "#block"
+      }
+    ]
+  "throws-list":
+    begin: "\\b(throws)\\b"
+    beginCaptures:
+      "1":
+        name: "keyword.control.flow.throw.vala"
+    end: "(?={)"
+    patterns: [
+      {
+        include: "#comment"
+      }
+      {
+        include: "#type"
+      }
+      {
+        include: "#punctuation-comma"
+      }
+    ]
+  "constructor-declaration":
+    begin: "(?=@?[_[:alpha:]][_[:alnum:]]*\\s*\\()"
+    end: "(?<=\\})|(?=;)"
+    patterns: [
+      {
+        match: "(@?[_[:alpha:]][_[:alnum:]]*)\\b"
+        captures:
           "1":
             name: "entity.name.function.vala"
+      }
+      {
+        include: "#parenthesized-parameter-list"
+      }
+      {
+        include: "#comment"
+      }
+      {
+        include: "#expression-body"
+      }
+      {
+        include: "#block"
+      }
+    ]
+  "gobject-constructor-declaration":
+    begin: "\\b(construct)\\s*(?=\\{)"
+    beginCaptures:
+      "1":
+        name: "keyword.other.constructor.vala"
+    end: "(?<=\\})|(?=;)"
+    patterns: [
+      {
+        include: "#comment"
+      }
+      {
+        include: "#expression-body"
+      }
+      {
+        include: "#block"
+      }
+    ]
+  "destructor-declaration":
+    begin: "(~)(@?[_[:alpha:]][_[:alnum:]]*)\\s*(?=\\()"
+    beginCaptures:
+      "1":
+        name: "punctuation.tilde.vala"
+      "2":
+        name: "entity.name.function.vala"
+    end: "(?<=\\})|(?=;)"
+    patterns: [
+      {
+        include: "#comment"
+      }
+      {
+        include: "#parenthesized-parameter-list"
+      }
+      {
+        include: "#expression-body"
+      }
+      {
+        include: "#block"
+      }
+    ]
+  block:
+    begin: "\\{"
+    beginCaptures:
+      "0":
+        name: "punctuation.curlybrace.open.vala"
+    end: "\\}"
+    endCaptures:
+      "0":
+        name: "punctuation.curlybrace.close.vala"
+    patterns: [
+      {
+        include: "#statement"
+      }
+    ]
+  "variable-initializer":
+    begin: "(?<!=|!)(=)(?!=|>)"
+    beginCaptures:
+      "1":
+        name: "keyword.operator.assignment.vala"
+    end: "(?=[,\\)\\];}])"
+    patterns: [
+      {
+        include: "#expression"
+      }
+    ]
+  "expression-body":
+    begin: "=>"
+    beginCaptures:
+      "0":
+        name: "keyword.operator.arrow.vala"
+    end: "(?=[,\\);}])"
+    patterns: [
+      {
+        include: "#expression"
+      }
+    ]
+  "return-statement":
+    begin: "(?<!\\.)\\b(return)\\b"
+    beginCaptures:
+      "1":
+        name: "keyword.control.flow.return.vala"
+    end: "(?=;)"
+    patterns: [
+      {
+        include: "#expression"
+      }
+    ]
+  "break-or-continue-statement":
+    match: "(?<!\\.)\\b(?:(break)|(continue))\\b"
+    captures:
+      "1":
+        name: "keyword.control.flow.break.vala"
+      "2":
+        name: "keyword.control.flow.continue.vala"
+  "throw-statement":
+    begin: "(?<!\\.)\\b(throw)\\b"
+    beginCaptures:
+      "1":
+        name: "keyword.control.flow.throw.vala"
+    end: "(?=;)"
+    patterns: [
+      {
+        include: "#expression"
+      }
+    ]
+  "if-statement":
+    begin: "(?<!\\.)\\b(if)\\b\\s*(?=\\()"
+    beginCaptures:
+      "1":
+        name: "keyword.control.conditional.if.vala"
+    end: "(?<=\\})|(?=;)"
+    patterns: [
+      {
+        begin: "\\("
+        beginCaptures:
+          "0":
+            name: "punctuation.parenthesis.open.vala"
         end: "\\)"
-        name: "meta.method.identifier.vala"
+        endCaptures:
+          "0":
+            name: "punctuation.parenthesis.close.vala"
         patterns: [
           {
-            include: "#values"
-          }
-          {
-            include: "#parameters"
-          }
-        ]
-      }
-      {
-        begin: "(?=\\w.*\\s+\\w+\\s*\\()"
-        end: "(?=\\w+\\s*\\()"
-        name: "meta.method.return-type.vala"
-        patterns: [
-          {
-            include: "#all-types"
+            include: "#expression"
           }
         ]
       }
       {
-        include: "#throws"
+        include: "#statement"
       }
+    ]
+  "else-part":
+    begin: "(?<!\\.)\\b(else)\\b"
+    beginCaptures:
+      "1":
+        name: "keyword.control.conditional.else.vala"
+    end: "(?<=\\})|(?=;)"
+    patterns: [
       {
-        begin: "{"
-        end: "(?=})"
-        name: "meta.method.body.vala"
+        include: "#statement"
+      }
+    ]
+  "switch-statement":
+    begin: "(?<!\\.)\\b(switch)\\b\\s*(?=\\()"
+    beginCaptures:
+      "1":
+        name: "keyword.control.switch.vala"
+    end: "(?<=\\})"
+    patterns: [
+      {
+        begin: "\\("
+        beginCaptures:
+          "0":
+            name: "punctuation.parenthesis.open.vala"
+        end: "\\)"
+        endCaptures:
+          "0":
+            name: "punctuation.parenthesis.close.vala"
         patterns: [
           {
-            include: "#code"
+            include: "#expression"
+          }
+        ]
+      }
+      {
+        begin: "\\{"
+        beginCaptures:
+          "0":
+            name: "punctuation.curlybrace.open.vala"
+        end: "\\}"
+        endCaptures:
+          "0":
+            name: "punctuation.curlybrace.close.vala"
+        patterns: [
+          {
+            include: "#switch-label"
+          }
+          {
+            include: "#statement"
           }
         ]
       }
     ]
-  namespace:
-    begin: "^(?=\\s*[A-Z0-9_]+\\s*({|\\(|,))"
-    comment: "This is not quite right. See the class grammar right now"
+  "switch-label":
+    patterns: [
+      {
+        begin: "(?<!\\.)\\b(case)\\b\\s+"
+        beginCaptures:
+          "1":
+            name: "keyword.control.case.vala"
+        end: ":"
+        endCaptures:
+          "0":
+            name: "punctuation.separator.colon.vala"
+        patterns: [
+          {
+            include: "#expression"
+          }
+        ]
+      }
+      {
+        match: "(?<!\\.)\\b(default)\\b\\s*(:)"
+        captures:
+          "1":
+            name: "keyword.control.default.vala"
+          "2":
+            name: "punctuation.separator.colon.vala"
+      }
+    ]
+  "do-statement":
+    begin: "(?<!\\.)\\b(do)\\b"
+    beginCaptures:
+      "1":
+        name: "keyword.control.loop.do.vala"
     end: "(?=;|})"
     patterns: [
       {
-        begin: "\\w+"
+        include: "#statement"
+      }
+    ]
+  "while-statement":
+    begin: "(?<!\\.)\\b(while)\\b\\s*(?=\\()"
+    beginCaptures:
+      "1":
+        name: "keyword.control.loop.while.vala"
+    end: "(?<=\\})|(?=;)"
+    patterns: [
+      {
+        begin: "\\("
         beginCaptures:
           "0":
-            name: "constant.other.namespace.vala"
-        end: "(?=,|;|})"
-        name: "meta.namespace.vala"
+            name: "punctuation.parenthesis.open.vala"
+        end: "\\)"
+        endCaptures:
+          "0":
+            name: "punctuation.parenthesis.close.vala"
         patterns: [
           {
-            include: "#parens"
-          }
-          {
-            begin: "{"
-            end: "}"
-            patterns: [
-              {
-                include: "#code"
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  objects:
-    patterns: [
-      {
-        # OBJ in OBJ.prop, OBJ.methodCall()
-        match: '^[^.][A-Z][A-Z0-9_]*(?=\\s*\\.\\s*[a-zA-Z_][a-zA-Z0-9_]*)'
-        name: 'constant.other.object.vala'
-      }
-      {
-        # obj in obj.prop, obj.methodCall()
-        match: '^[^.][a-zA-Z_][a-zA-Z0-9_]*(?=\\s*\\.\\s*[a-zA-Z_][a-zA-Z0-9_]*)'
-        name: 'variable.other.object.vala'
-      }
-    ]
-  "object-types":
-    patterns: [
-      {
-        begin: "\\b((?:[a-z]\\w*\\.)*[A-Z]+\\w*)<"
-        end: ">|[^\\w\\s,\\.\\?<\\[\\]]"
-        name: "storage.type.generic.vala"
-        patterns: [
-          {
-            include: "#object-types"
-          }
-          {
-            begin: "<"
-            comment: "This is just to support <>'s with no actual type prefix"
-            end: ">|[^\\w\\s,\\[\\]<]"
-            name: "storage.type.generic.vala"
+            include: "#expression"
           }
         ]
       }
       {
-        begin: "\\b((?:[a-z]\\w*\\.)*[A-Z]+\\w*)(?=\\[)"
-        end: "(?=[^\\]\\s])"
-        name: "storage.type.object.array.vala"
+        include: "#statement"
+      }
+    ]
+  "for-statement":
+    begin: "(?<!\\.)\\b(for)\\b\\s*(?=\\()"
+    beginCaptures:
+      "1":
+        name: "keyword.control.loop.for.vala"
+    end: "(?<=\\})|(?=;)"
+    patterns: [
+      {
+        begin: "\\("
+        beginCaptures:
+          "0":
+            name: "punctuation.parenthesis.open.vala"
+        end: "\\)"
+        endCaptures:
+          "0":
+            name: "punctuation.parenthesis.close.vala"
         patterns: [
           {
-            begin: "\\["
-            end: "\\]"
-            patterns: [
-              {
-                include: "#code"
-              }
-            ]
+            include: "#local-declaration"
+          }
+          {
+            include: "#expression"
+          }
+          {
+            include: "#punctuation-comma"
+          }
+          {
+            include: "#punctuation-semicolon"
           }
         ]
       }
       {
-        captures:
-          "1":
-            name: "keyword.operator.dereference.vala"
-        match: "\\b(?:[a-z]\\w*(\\.))*[A-Z]+\\w*\\b"
-        name: "storage.type.vala"
+        include: "#statement"
       }
     ]
-  "object-types-inherited":
+  "foreach-statement":
+    begin: "(?<!\\.)\\b(foreach)\\b\\s*(?=\\()"
+    beginCaptures:
+      "1":
+        name: "keyword.control.loop.foreach.vala"
+    end: "(?<=\\})|(?=;)"
     patterns: [
       {
-        begin: "\\b((?:[a-z]\\w*\\.)*[A-Z]+\\w*)<"
-        end: ">|[^\\w\\s,<]"
-        name: "entity.other.inherited-class.vala"
+        begin: "\\("
+        beginCaptures:
+          "0":
+            name: "punctuation.parenthesis.open.vala"
+        end: "\\)"
+        endCaptures:
+          "0":
+            name: "punctuation.parenthesis.close.vala"
         patterns: [
           {
-            include: "#object-types"
+            match: '''
+              (?x)
+              (?:
+                (\\bvar\\b)|
+                (?<typename>
+                  (?:
+                    (?:
+                      (?:(?<identifier>@?[_[:alpha:]][_[:alnum:]]*)\\s*)?
+                      (?<nameandtypeargs> # identifier + type arguments (if any)
+                        \\g<identifier>\\s*
+                        (?<typeargs>\\s*<(?:[^<>]|\\g<typeargs>)+>\\s*)?
+                      )
+                      (?:\\s*\\.\\s*\\g<nameandtypeargs>)* | # Are there any more names being dotted into?
+                      (?<tuple>\\s*\\((?:[^\\(\\)]|\\g<tuple>)+\\))
+                    )
+                    (?:\\s*\\?\\s*)? # nullable suffix?
+                    (?:\\s*\\[(?:\\s*,\\s*)*\\]\\s*)* # array suffix?
+                  )
+                )
+              )\\s+
+              (\\g<identifier>)\\s+
+              \\b(in)\\b
+            '''
+            captures:
+              "1":
+                name: "keyword.other.var.vala"
+              "2":
+                patterns: [
+                  {
+                    include: "#type"
+                  }
+                ]
+              "7":
+                name: "variable.other.vala"
+              "8":
+                name: "keyword.control.loop.in.vala"
           }
           {
-            begin: "<"
-            comment: "This is just to support <>'s with no actual type prefix"
-            end: ">|[^\\w\\s,<]"
-            name: "storage.type.generic.vala"
+            include: "#expression"
           }
         ]
       }
       {
-        captures:
-          "1":
-            name: "keyword.operator.dereference.vala"
-        match: "\\b(?:[a-z]\\w*(\\.))*[A-Z]+\\w*"
-        name: "entity.other.inherited-class.vala"
+        include: "#statement"
       }
     ]
-  parameters:
+  "try-statement":
     patterns: [
       {
-        match: "final"
-        name: "storage.modifier.vala"
+        include: "#try-block"
       }
       {
-        include: "#primitive-arrays"
+        include: "#catch-clause"
       }
       {
-        include: "#primitive-types"
-      }
-      {
-        include: "#object-types"
-      }
-      {
-        include: "#objects"
-      }
-      {
-        include: "#properties"
-      }
-      {
-        include: "#methods"
-      }
-      {
-        match: "\\w+"
-        name: "variable.parameter.vala"
+        include: "#finally-clause"
       }
     ]
-  parens:
-    begin: "\\("
-    end: "\\)"
+  "try-block":
+    begin: "(?<!\\.)\\b(try)\\b"
+    beginCaptures:
+      "1":
+        name: "keyword.control.try.vala"
+    end: "(?<=\\})"
     patterns: [
       {
-        include: "#code"
+        include: "#comment"
+      }
+      {
+        include: "#block"
       }
     ]
-  "primitive-arrays":
+  "finally-clause":
+    begin: "(?<!\\.)\\b(finally)\\b"
+    beginCaptures:
+      "1":
+        name: "keyword.control.try.finally.vala"
+    end: "(?<=\\})"
     patterns: [
       {
-        match: "\\b(?:bool|double|float|unichar|char|uchar|int|uint|long|ulong|short|ushort|size_t|ssize_t|string|void|int8|int16|int32|int64|uint8|uint16|uint32|uint64)(\\[\\])*\\b"
-        name: "storage.type.primitive.array.vala"
+        include: "#comment"
+      }
+      {
+        include: "#block"
       }
     ]
-  "primitive-types":
+  "catch-clause":
+    begin: "(?<!\\.)\\b(catch)\\b"
+    beginCaptures:
+      "1":
+        name: "keyword.control.try.catch.vala"
+    end: "(?<=\\})"
     patterns: [
       {
-        comment: "var is not really a primitive, but acts like one in most cases"
-        match: "\\b(?:var|bool|double|float|unichar|char|uchar|int|uint|long|ulong|short|ushort|size_t|ssize_t|string|void|signal|int8|int16|int32|int64|uint8|uint16|uint32|uint64)\\b"
-        name: "storage.type.primitive.vala"
+        begin: "\\("
+        beginCaptures:
+          "0":
+            name: "punctuation.parenthesis.open.vala"
+        end: "\\)"
+        endCaptures:
+          "0":
+            name: "punctuation.parenthesis.close.vala"
+        patterns: [
+          {
+            match: '''
+              (?x)
+              (?<typename>
+                (?:
+                  (?:
+                    (?:(?<identifier>@?[_[:alpha:]][_[:alnum:]]*)\\s*)?
+                    (?<nameandtypeargs> # identifier + type arguments (if any)
+                      \\g<identifier>\\s*
+                      (?<typeargs>\\s*<(?:[^<>]|\\g<typeargs>)+>\\s*)?
+                    )
+                    (?:\\s*\\.\\s*\\g<nameandtypeargs>)* | # Are there any more names being dotted into?
+                    (?<tuple>\\s*\\((?:[^\\(\\)]|\\g<tuple>)+\\))
+                  )
+                  (?:\\s*\\?\\s*)? # nullable suffix?
+                  (?:\\s*\\[(?:\\s*,\\s*)*\\]\\s*)* # array suffix?
+                )
+              )\\s*
+              (?:(\\g<identifier>)\\b)?
+            '''
+            captures:
+              "1":
+                patterns: [
+                  {
+                    include: "#type"
+                  }
+                ]
+              "6":
+                name: "variable.other.vala"
+          }
+        ]
+      }
+      {
+        include: "#when-clause"
+      }
+      {
+        include: "#comment"
+      }
+      {
+        include: "#block"
       }
     ]
-  properties:
-    patterns: [
-      {
-        # PROP1 in obj.PROP1.prop2, func().PROP1.prop2
-        match: '(\\.)\\s*([A-Z][A-Z0-9_]*\\b\\$*)(?=\\s*\\.\\s*[a-zA-Z_][a-zA-Z0-9_]*)'
-        captures:
-          '1':
-            name: 'punctuation.separator.property.period.vala'
-          '2':
-            name: 'constant.other.object.property.vala'
-      }
-      {
-        # prop1 in obj.prop1.prop2, func().prop1.prop2
-        match: '(\\.)\\s*(\\$*[a-zA-Z_][a-zA-Z0-9_]*)(?=\\s*\\.\\s*[a-zA-Z_][a-zA-Z0-9_]*)'
-        captures:
-          '1':
-            name: 'punctuation.separator.property.period.vala'
-          '2':
-            name: 'variable.other.object.property.vala'
-      }
-      {
-        # PROP in obj.PROP, func().PROP
-        match: '(\\.)\\s*([A-Z][A-Z0-9_$]*\\b\\$*)'
-        captures:
-          '1':
-            name: 'punctuation.separator.property.period.vala'
-          '2':
-            name: 'constant.other.property.vala'
-      }
-      {
-        # prop in obj.prop, func().prop
-        match: '(?!.*[\\(])(\\.)\\s*(\\$*[a-zA-Z_][a-zA-Z0-9_]*)'
-        captures:
-          '1':
-            name: 'punctuation.separator.property.period.vala'
-          '2':
-            name: 'variable.other.property.vala'
-      }
-      {
-        # 123illegal in obj.123illegal, func().123illegal
-        match: '(\\.)\\s*([0-9][a-zA-Z0-9_]*)'
-        captures:
-          '1':
-            name: 'punctuation.separator.property.period.vala'
-          '2':
-            name: 'invalid.illegal.identifier.vala'
-      }
-    ]
-  "storage-modifiers":
-    captures:
+  "local-declaration":
+    begin: '''
+      (?x)
+      (?:
+        (?:(\\bref)\\s+(?:(\\breadonly)\\s+)?)?(\\bvar\\b)| # ref local
+        (?<typename>
+          (?:
+            (?:ref\\s+(?:readonly\\s+)?)?   # ref local
+            (?:
+              (?:(?<identifier>@?[_[:alpha:]][_[:alnum:]]*)\\s*)?
+              (?<nameandtypeargs> # identifier + type arguments (if any)
+                \\g<identifier>\\s*
+                (?<typeargs>\\s*<(?:[^<>]|\\g<typeargs>)+>\\s*)?
+              )
+              (?:\\s*\\.\\s*\\g<nameandtypeargs>)* | # Are there any more names being dotted into?
+              (?<tuple>\\s*\\((?:[^\\(\\)]|\\g<tuple>)+\\))
+            )
+            (?:\\s*\\?\\s*)? # nullable suffix?
+            (?:\\s*\\[(?:\\s*,\\s*)*\\]\\s*)* # array suffix?
+          )
+        )
+      )\\s+
+      (\\g<identifier>)\\s*
+      (?=,|;|=|\\))
+    '''
+    beginCaptures:
       "1":
         name: "storage.modifier.vala"
-    comment: "Not sure about unsafe and readonly"
-    match: "\\b(public|private|protected|internal|static|final|sealed|virtual|override|abstract|readonly|volatile|dynamic|async|unsafe|out|ref|weak|owned|unowned|const)\\b"
-  strings:
+      "2":
+        name: "storage.modifier.vala"
+      "3":
+        name: "keyword.other.var.vala"
+      "4":
+        patterns: [
+          {
+            include: "#type"
+          }
+        ]
+      "9":
+        name: "variable.other.vala"
+    end: "(?=;|\\))"
+    patterns: [
+      {
+        include: "#comment"
+      }
+      {
+        match: "@?[_[:alpha:]][_[:alnum:]]*"
+        name: "variable.other.vala"
+      }
+      {
+        include: "#punctuation-comma"
+      }
+      {
+        include: "#variable-initializer"
+      }
+    ]
+  "constant-declaration":
+    begin: '''
+      (?x)
+      (?<typename>
+        (?:@?[_[:alpha:]][_[:alnum:]]*)\\s*
+      )
+      (?<name> # identifier + type arguments (if any)
+        (@?[_A-Z][_A-Z0-9]*\\s*)?
+      )
+      (?=,|;|=)
+    '''
+    beginCaptures:
+      "1":
+        patterns: [
+          {
+            include: "#type"
+          }
+        ]
+      "3":
+        name: "storage.generic.constant.vala"
+    end: "(?=;)"
+    patterns: [
+      {
+        include: "#punctuation-comma"
+      }
+      {
+        include: "#comment"
+      }
+      {
+        include: "#variable-initializer"
+      }
+    ]
+  "declaration-expression-local":
+    match: '''
+      (?x) # e.g. int x OR var x
+      (?:
+        \\b(var)\\b|
+        (?<typename>
+          (?:
+            (?:
+              (?:(?<identifier>@?[_[:alpha:]][_[:alnum:]]*)\\s*)?
+              (?<nameandtypeargs> # identifier + type arguments (if any)
+                \\g<identifier>\\s*
+                (?<typeargs>\\s*<(?:[^<>]|\\g<typeargs>)+>\\s*)?
+              )
+              (?:\\s*\\.\\s*\\g<nameandtypeargs>)* | # Are there any more names being dotted into?
+              (?<tuple>\\s*\\((?:[^\\(\\)]|\\g<tuple>)+\\))
+            )
+            (?:\\s*\\?\\s*)? # nullable suffix?
+            (?:\\s*\\[(?:\\s*,\\s*)*\\]\\s*)* # array suffix?
+          )
+        )
+      )\\s+
+      (\\g<identifier>)\\b\\s*
+      (?=[,)\\]])
+    '''
+    captures:
+      "1":
+        name: "keyword.other.var.vala"
+      "2":
+        patterns: [
+          {
+            include: "#type"
+          }
+        ]
+      "7":
+        name: "variable.other.vala"
+  "throw-expression":
+    match: "(?<!\\.)\\b(throw)\\b"
+    captures:
+      "1":
+        name: "keyword.control.flow.throw.vala"
+  "interpolated-string":
     patterns: [
       {
         begin: "@\""
@@ -752,12 +1501,12 @@ repository:
         name: "string.quoted.interpolated.vala"
         patterns: [
           {
-            name: "constant.character.escape.vala"
             match: "\\\\."
+            name: "constant.character.escape.vala"
           }
           {
-            name: "constant.character.escape.vala"
             match: "\\$\\w+"
+            name: "constant.character.escape.vala"
           }
           {
             begin: "(\\$\\()(([^)(]|\\(([^)(]|\\([^)]*\\))*\\))*)"
@@ -767,26 +1516,7 @@ repository:
               "2":
                 patterns: [
                   {
-                    include: "#objects"
-                  }
-                  {
-                    include: "#properties"
-                  }
-                  {
-                    begin: "([\\~\\w]+)\\s*\\("
-                    beginCaptures:
-                      "1":
-                        name: "entity.name.function.vala"
-                    end: "\\)"
-                    name: "meta.method.identifier.vala"
-                    patterns: [
-                      {
-                        include: "#values"
-                      }
-                      {
-                        include: "#parameters"
-                      }
-                    ]
+                    include: "#expression"
                   }
                 ]
             end: "\\)"
@@ -852,31 +1582,879 @@ repository:
         ]
       }
     ]
-  throws:
-    begin: "throws"
+  literal:
+    patterns: [
+      {
+        include: "#boolean-literal"
+      }
+      {
+        include: "#null-literal"
+      }
+      {
+        include: "#numeric-literal"
+      }
+      {
+        include: "#char-literal"
+      }
+      {
+        include: "#string-literal"
+      }
+      {
+        include: "#verbatim-string-literal"
+      }
+    ]
+  "boolean-literal":
+    patterns: [
+      {
+        match: "(?<!\\.)\\btrue\\b"
+        name: "constant.language.boolean.true.vala"
+      }
+      {
+        match: "(?<!\\.)\\bfalse\\b"
+        name: "constant.language.boolean.false.vala"
+      }
+    ]
+  "null-literal":
+    match: "(?<!\\.)\\bnull\\b"
+    name: "constant.language.null.vala"
+  "numeric-literal":
+    patterns: [
+      {
+        match: "\\b0(x|X)[0-9a-fA-F_]+(U|u|L|l|UL|Ul|uL|ul|LU|Lu|lU|lu)?\\b"
+        name: "constant.numeric.hex.vala"
+      }
+      {
+        match: "\\b0(b|B)[01_]+(U|u|L|l|UL|Ul|uL|ul|LU|Lu|lU|lu)?\\b"
+        name: "constant.numeric.binary.vala"
+      }
+      {
+        match: "\\b([0-9_]+)?\\.[0-9_]+((e|E)[0-9]+)?(F|f|D|d|M|m)?\\b"
+        name: "constant.numeric.decimal.vala"
+      }
+      {
+        match: "\\b[0-9_]+(e|E)[0-9_]+(F|f|D|d|M|m)?\\b"
+        name: "constant.numeric.decimal.vala"
+      }
+      {
+        match: "\\b[0-9_]+(F|f|D|d|M|m)\\b"
+        name: "constant.numeric.decimal.vala"
+      }
+      {
+        match: "\\b[0-9_]+(U|u|L|l|UL|Ul|uL|ul|LU|Lu|lU|lu)?\\b"
+        name: "constant.numeric.decimal.vala"
+      }
+    ]
+  "char-literal":
+    begin: "'"
     beginCaptures:
       "0":
+        name: "punctuation.definition.char.begin.vala"
+    end: "(\\')|((?:[^\\\\\\n])$)"
+    endCaptures:
+      "1":
+        name: "punctuation.definition.char.end.vala"
+      "2":
+        name: "invalid.illegal.newline.vala"
+    name: "string.quoted.single.vala"
+    patterns: [
+      {
+        include: "#string-character-escape"
+      }
+    ]
+  "string-literal":
+    begin: "(?<!@)\""
+    beginCaptures:
+      "0":
+        name: "punctuation.definition.string.begin.vala"
+    end: "(\")|((?:[^\\\\\\n])$)"
+    endCaptures:
+      "1":
+        name: "punctuation.definition.string.end.vala"
+      "2":
+        name: "invalid.illegal.newline.vala"
+    name: "string.quoted.double.vala"
+    patterns: [
+      {
+        include: "#string-character-escape"
+      }
+    ]
+  "string-character-escape":
+    match: "\\\\."
+    name: "constant.character.escape.vala"
+  "verbatim-string-literal":
+    begin: "@\""
+    beginCaptures:
+      "0":
+        name: "punctuation.definition.string.begin.vala"
+    end: "\"(?=[^\"])"
+    endCaptures:
+      "0":
+        name: "punctuation.definition.string.end.vala"
+    name: "string.quoted.double.vala"
+    patterns: [
+      {
+        include: "#verbatim-string-character-escape"
+      }
+    ]
+  "verbatim-string-character-escape":
+    match: "\"\""
+    name: "constant.character.escape.vala"
+  "expression-operators":
+    patterns: [
+      {
+        match: "\\*=|/=|%=|\\+=|-="
+        name: "keyword.operator.assignment.compound.vala"
+      }
+      {
+        match: "\\&=|\\^=|<<=|>>=|\\|="
+        name: "keyword.operator.assignment.compound.bitwise.vala"
+      }
+      {
+        match: "<<|>>"
+        name: "keyword.operator.bitwise.shift.vala"
+      }
+      {
+        match: "==|!="
+        name: "keyword.operator.comparison.vala"
+      }
+      {
+        match: "<=|>=|<|>"
+        name: "keyword.operator.relational.vala"
+      }
+      {
+        match: "\\!|&&|\\|\\|"
+        name: "keyword.operator.logical.vala"
+      }
+      {
+        match: "\\&|~|\\^|\\|"
+        name: "keyword.operator.bitwise.vala"
+      }
+      {
+        match: "\\="
+        name: "keyword.operator.assignment.vala"
+      }
+      {
+        match: "--"
+        name: "keyword.operator.decrement.vala"
+      }
+      {
+        match: "\\+\\+"
+        name: "keyword.operator.increment.vala"
+      }
+      {
+        match: "%|\\*|/|-|\\+"
+        name: "keyword.operator.arithmetic.vala"
+      }
+    ]
+  "conditional-operator":
+    begin: "(?<!\\?)\\?(?!\\?|\\.|\\[)"
+    beginCaptures:
+      "0":
+        name: "keyword.operator.conditional.question-mark.vala"
+    end: ":"
+    endCaptures:
+      "0":
+        name: "keyword.operator.conditional.colon.vala"
+    patterns: [
+      {
+        include: "#expression"
+      }
+    ]
+  "parenthesized-expression":
+    begin: "\\("
+    beginCaptures:
+      "0":
+        name: "punctuation.parenthesis.open.vala"
+    end: "\\)"
+    endCaptures:
+      "0":
+        name: "punctuation.parenthesis.close.vala"
+    patterns: [
+      {
+        include: "#expression"
+      }
+    ]
+  "initializer-expression":
+    begin: "\\{"
+    beginCaptures:
+      "0":
+        name: "punctuation.curlybrace.open.vala"
+    end: "\\}"
+    endCaptures:
+      "0":
+        name: "punctuation.curlybrace.close.vala"
+    patterns: [
+      {
+        include: "#expression"
+      }
+      {
+        include: "#punctuation-comma"
+      }
+    ]
+  "cast-expression":
+    match: '''
+      (?x)
+      (\\()\\s*
+      (?<typename>
+        (?:
+          (?:
+            (?:(?<identifier>@?[_[:alpha:]][_[:alnum:]]*)\\s*)?
+            (?<nameandtypeargs> # identifier + type arguments (if any)
+              \\g<identifier>\\s*
+              (?<typeargs>\\s*<(?:[^<>]|\\g<typeargs>)+>\\s*)?
+            )
+            (?:\\s*\\.\\s*\\g<nameandtypeargs>)* | # Are there any more names being dotted into?
+            (?<tuple>\\s*\\((?:[^\\(\\)]|\\g<tuple>)+\\))
+          )
+          (?:\\s*\\?\\s*)? # nullable suffix?
+          (?:\\s*\\[(?:\\s*,\\s*)*\\]\\s*)* # array suffix?
+        )
+      )\\s*
+      (\\))(?=\\s*@?[_[:alnum:]\\(])
+    '''
+    captures:
+      "1":
+        name: "punctuation.parenthesis.open.vala"
+      "2":
+        patterns: [
+          {
+            include: "#type"
+          }
+        ]
+      "7":
+        name: "punctuation.parenthesis.close.vala"
+  "this-or-base-expression":
+    match: "\\b(?:(base)|(this))\\b"
+    captures:
+      "1":
+        name: "keyword.other.base.vala"
+      "2":
+        name: "keyword.other.this.vala"
+  "invocation-expression":
+    begin: '''
+      (?x)
+      (?:(\\.)\\s*)?                                     # preceding dot?
+      (@?[_[:alpha:]][_[:alnum:]]*)\\s*                  # method name
+      (?<typeargs>\\s*<([^<>]|\\g<typeargs>)+>\\s*)?\\s* # type arguments
+      (?=\\()                                            # open paren of argument list
+    '''
+    beginCaptures:
+      "1":
+        name: "punctuation.accessor.vala"
+      "2":
+        name: "entity.name.function.vala"
+      "3":
+        patterns: [
+          {
+            include: "#type-arguments"
+          }
+        ]
+    end: "(?<=\\))"
+    patterns: [
+      {
+        include: "#argument-list"
+      }
+    ]
+  "element-access-expression":
+    patterns: [
+      {
+        begin: '''
+          (?x)
+          (?:(\\.)\\s*)                          # preceding dot?
+          (?:(@?[_[:alpha:]][_[:alnum:]]*)\\s*)? # property name
+          (?=\\[)                                # open bracket of argument list
+        '''
+        beginCaptures:
+          "1":
+            name: "punctuation.accessor.vala"
+          "2":
+            name: "variable.other.field.vala"
+        end: "(?<=\\])(?!\\s*\\[)"
+        patterns: [
+          {
+            include: "#bracketed-argument-list"
+          }
+        ]
+      }
+      {
+        begin: '''
+          (?x)
+          (?:(@?[_[:alpha:]][_[:alnum:]]*)\\s*)? # property name
+          (?=\\[)                                # open bracket of argument list
+        '''
+        beginCaptures:
+          "1":
+            name: "variable.other.object.vala"
+        end: "(?<=\\])(?!\\s*\\[)"
+        patterns: [
+          {
+            include: "#bracketed-argument-list"
+          }
+        ]
+      }
+    ]
+  "object-access-expression":
+    patterns: [
+      {
+        match: '''
+          (?x)
+          (\\.)\\s*                        # preceding dot
+          (@?[_[A-Z]][_[A-Z0-9]]*)\\s*     # property name
+          (?![_[:alnum:]]|\\(|(\\?)?\\[|<) # next character is not alpha-numeric,
+                                           # nor a (, [, or <. Also, test for ?[
+        '''
+        captures:
+          "1":
+            name: "punctuation.accessor.vala"
+          "2":
+            name: "entity.name.constant.vala"
+      }
+      {
+        match: '''
+          (?x)
+          (\\.)\\s*                         # preceding dot
+          (@?[_[:alpha:]][_[:alnum:]]*)\\s* # property name
+          (?![_[:alnum:]]|\\(|(\\?)?\\[|<)  # next character is not alpha-numeric,
+                                            # nor a (, [, or <. Also, test for ?[
+        '''
+        captures:
+          "1":
+            name: "punctuation.accessor.vala"
+          "2":
+            name: "variable.other.field.vala"
+      }
+      {
+        match: '''
+          (?x)
+          (\\.)?\\s*
+          (@?[_[:alpha:]][_[:alnum:]]*)
+          (?<typeparams>\\s*<([^<>]|\\g<typeparams>)+>\\s*)
+          (?=
+            (\\s*\\?)?
+            \\s*\\.\\s*@?[_[:alpha:]][_[:alnum:]]*
+          )
+        '''
+        captures:
+          "1":
+            name: "punctuation.accessor.vala"
+          "2":
+            name: "variable.other.object.vala"
+          "3":
+            patterns: [
+              {
+                include: "#type-arguments"
+              }
+            ]
+      }
+      {
+        match: '''
+          (?x)
+          (@?[_[:alpha:]][_[:alnum:]]*)
+          (?=
+            (\\s*\\?)?
+            \\s*\\.\\s*@?[_[:alpha:]][_[:alnum:]]*
+          )
+        '''
+        captures:
+          "1":
+            name: "variable.other.object.vala"
+      }
+    ]
+  "storage-access-expression":
+    patterns: [
+      {
+        match: '''
+          (?x)
+          (\\.)?\\s*                       # preceding dot
+          (@?[_[A-Z]][_[A-Z0-9]]*)\\s*     # property name
+          (?![_[:alnum:]]|\\(|(\\?)?\\[|<) # next character is not alpha-numeric,
+                                           # nor a (, [, or <. Also, test for ?[
+        '''
+        captures:
+          "1":
+            name: "punctuation.accessor.vala"
+          "2":
+            name: "storage.generic.constant.vala"
+      }
+      {
+        match: '''
+          (?x)
+          (\\.)\\s*                         # preceding dot
+          (@?[_[:alpha:]][_[:alnum:]]*)\\s* # property name
+          (?![_[:alnum:]]|\\(|(\\?)?\\[|<)  # next character is not alpha-numeric,
+                                            # nor a (, [, or <. Also, test for ?[
+        '''
+        captures:
+          "1":
+            name: "punctuation.accessor.vala"
+          "2":
+            name: "storage.generic.field.vala"
+      }
+      {
+        match: '''
+          (?x)
+          (\\.)?\\s*
+          (@?[_[A-Z]][_[:alnum:]]*)
+          (?<typeparams>\\s*<([^<>]|\\g<typeparams>)+>\\s*)
+          (?=
+            (\\s*\\?)?
+            \\s*\\.\\s*@?[_[:alpha:]][_[:alnum:]]*
+          )
+        '''
+        captures:
+          "1":
+            name: "punctuation.accessor.vala"
+          "2":
+            name: "storage.generic.vala"
+          "3":
+            patterns: [
+              {
+                include: "#type-arguments"
+              }
+            ]
+      }
+      {
+        match: '''
+          (?x)
+          (@?[_[A-Z]][_[:alnum:]]*)
+          (?=
+            (\\s*\\?)?
+            \\s*\\.\\s*@?[_[:alpha:]][_[:alnum:]]*
+          )
+        '''
+        captures:
+          "1":
+            name: "storage.generic.vala"
+      }
+    ]
+  "object-creation-expression":
+    match: '''
+      (?x)
+      (new)\\s+
+      (?<typename>
+        (?:
+          (?:
+            (?:(?<identifier>@?[_[:alpha:]][_[:alnum:]]*)\\.\\s*)? # alias-qualification
+            (?<nameandtypeargs> # identifier + type arguments (if any)
+              \\g<identifier>\\s*
+              (?<typeargs>\\s*<(?:[^<>]|\\g<typeargs>)+>\\s*)?
+            )
+            (?:\\s*\\.(?>\\s*\\g<nameandtypeargs>)* # Are there any more names being dotted into?
+            (?!\\s*\\())
+          )
+          (?:\\s*\\?\\s*)? # nullable suffix?
+          (?:\\s*\\[(?:\\s*,\\s*)*\\]\\s*)* # array suffix?
+        )
+      )*\\s*
+    '''
+    captures:
+      "1":
+        name: "keyword.other.new.vala"
+      "2":
+        patterns: [
+          {
+            include: "#invocation-expression"
+          }
+          {
+            include: "#type"
+          }
+        ]
+    patterns: [
+      {
+        include: "#invocation-expression"
+      }
+      {
+        include: "#argument-list"
+      }
+    ]
+  "anonymous-object-creation-expression":
+    begin: "\\b(new)\\b\\s*(?=\\{|$)"
+    beginCaptures:
+      "1":
+        name: "keyword.other.new.vala"
+    end: "(?<=\\})"
+    patterns: [
+      {
+        include: "#initializer-expression"
+      }
+    ]
+  "parenthesized-parameter-list":
+    begin: "(\\()"
+    beginCaptures:
+      "0":
+        name: "punctuation.parenthesis.open.vala"
+    end: "(\\))"
+    endCaptures:
+      "0":
+        name: "punctuation.parenthesis.close.vala"
+    patterns: [
+      {
+        include: "#comment"
+      }
+      {
+        include: "#parameter"
+      }
+      {
+        include: "#punctuation-comma"
+      }
+      {
+        include: "#variable-initializer"
+      }
+    ]
+  parameter:
+    match: '''
+      (?x)
+      (?:(?:\\b(ref|out|this)\\b)\\s+)?
+      (?<typename>
+        (?:
+          (?:
+            (?:(?<identifier>@?[_[:alpha:]][_[:alnum:]]*)\\s*)?
+            (?<nameandtypeargs> # identifier + type arguments (if any)
+              \\g<identifier>\\s*
+              (?<typeargs>\\s*<(?:[^<>]|\\g<typeargs>)+>\\s*)?
+            )
+            (?:\\s*\\.\\s*\\g<nameandtypeargs>)* | # Are there any more names being dotted into?
+            (?<tuple>\\s*\\((?:[^\\(\\)]|\\g<tuple>)+\\))
+          )
+          (?:\\s*\\?\\s*)? # nullable suffix?
+          (?:\\s*\\[(?:\\s*,\\s*)*\\]\\s*)* # array suffix?
+        )
+      )\\s+
+      (\\g<identifier>)
+    '''
+    captures:
+      "1":
         name: "storage.modifier.vala"
-    end: "(?={|;)"
-    name: "meta.throwables.vala"
+      "2":
+        patterns: [
+          {
+            include: "#type"
+          }
+        ]
+      "7":
+        name: "variable.parameter.function.vala"
+  "argument-list":
+    begin: "\\("
+    beginCaptures:
+      "0":
+        name: "punctuation.parenthesis.open.vala"
+    end: "\\)"
+    endCaptures:
+      "0":
+        name: "punctuation.parenthesis.close.vala"
     patterns: [
       {
-        include: "#object-types"
+        include: "#argument"
+      }
+      {
+        include: "#punctuation-comma"
       }
     ]
-  values:
+  "bracketed-argument-list":
+    begin: "\\["
+    beginCaptures:
+      "0":
+        name: "punctuation.squarebracket.open.vala"
+    end: "\\]"
+    endCaptures:
+      "0":
+        name: "punctuation.squarebracket.close.vala"
     patterns: [
       {
-        include: "#strings"
+        include: "#argument"
       }
       {
-        include: "#object-types"
-      }
-      {
-        include: "#constants-and-special-vars"
-      }
-      {
-        include: "#anonymous-classes-and-new"
+        include: "#punctuation-comma"
       }
     ]
-scopeName: "source.vala"
+  argument:
+    patterns: [
+      {
+        name: "storage.modifier.vala"
+        match: "\\b(ref|out)\\b"
+      }
+      {
+        include: "#declaration-expression-local"
+      }
+      {
+        include: "#expression"
+      }
+    ]
+  "anonymous-method-expression":
+    patterns: [
+      {
+        begin: '''
+          (?x)
+          (?:\\b(async)\\b\\s*)?
+          (@?[_[:alpha:]][_[:alnum:]]*)\\b\\s*
+          (=>)
+        '''
+        beginCaptures:
+          "1":
+            name: "storage.modifier.vala"
+          "2":
+            name: "variable.parameter.function.vala"
+          "3":
+            name: "keyword.operator.arrow.vala"
+        end: "(?=\\)|;|}|,)"
+        patterns: [
+          {
+            include: "#block"
+          }
+          {
+            include: "#expression"
+          }
+        ]
+      }
+      {
+        begin: '''
+          (?x)
+          (?:\\b(async)\\b\\s*)?
+          (\\(.*?\\))\\s*
+          (=>)
+        '''
+        beginCaptures:
+          "1":
+            name: "storage.modifier.vala"
+          "2":
+            patterns: [
+              {
+                include: "#lambda-parameter-list"
+              }
+            ]
+          "3":
+            name: "keyword.operator.arrow.vala"
+        end: "(?=\\)|;|}|,)"
+        patterns: [
+          {
+            include: "#block"
+          }
+          {
+            include: "#expression"
+          }
+        ]
+      }
+      {
+        begin: '''
+          (?x)
+          (?:\\b(async)\\b\\s*)?
+          (?:\\b(delegate)\\b\\s*)
+        '''
+        beginCaptures:
+          "1":
+            name: "storage.modifier.vala"
+          "2":
+            name: "keyword.other.delegate.vala"
+        end: "(?=\\)|;|}|,)"
+        patterns: [
+          {
+            include: "#parenthesized-parameter-list"
+          }
+          {
+            include: "#block"
+          }
+          {
+            include: "#expression"
+          }
+        ]
+      }
+    ]
+  "lambda-parameter-list":
+    begin: "\\("
+    beginCaptures:
+      "0":
+        name: "punctuation.parenthesis.open.vala"
+    end: "\\)"
+    endCaptures:
+      "0":
+        name: "punctuation.parenthesis.close.vala"
+    patterns: [
+      {
+        include: "#comment"
+      }
+      {
+        include: "#attribute-section"
+      }
+      {
+        include: "#lambda-parameter"
+      }
+      {
+        include: "#punctuation-comma"
+      }
+    ]
+  "lambda-parameter":
+    match: '''
+      (?x)
+      (?:\\b(ref|out)\\b)?\\s*
+      (?:(?<typename>
+        (?:
+          (?:
+            (?:(?<identifier>@?[_[:alpha:]][_[:alnum:]]*)\\s*)?
+            (?<nameandtypeargs> # identifier + type arguments (if any)
+              \\g<identifier>\\s*
+              (?<typeargs>\\s*<(?:[^<>]|\\g<typeargs>)+>\\s*)?
+            )
+            (?:\\s*\\.\\s*\\g<nameandtypeargs>)* | # Are there any more names being dotted into?
+            (?<tuple>\\s*\\((?:[^\\(\\)]|\\g<tuple>)+\\))
+          )
+          (?:\\s*\\?\\s*)? # nullable suffix?
+          (?:\\s*\\[(?:\\s*,\\s*)*\\]\\s*)* # array suffix?
+        )
+      )\\s+)?
+      (\\g<identifier>)\\b\\s*
+      (?=[,)])
+    '''
+    captures:
+      "1":
+        name: "storage.modifier.vala"
+      "2":
+        patterns: [
+          {
+            include: "#type"
+          }
+        ]
+      "7":
+        name: "variable.parameter.function.vala"
+  type:
+    name: "meta.type.vala"
+    patterns: [
+      {
+        include: "#comment"
+      }
+      {
+        include: "#type-builtin"
+      }
+      {
+        include: "#type-name"
+      }
+      {
+        include: "#type-arguments"
+      }
+      {
+        include: "#type-array-suffix"
+      }
+      {
+        include: "#type-nullable-suffix"
+      }
+    ]
+  "type-builtin":
+    match: "\\b(bool|byte|char|double|float|int|int16|int32|int64|int8|long|short|size_t|ssize_t|uchar|uint|uint16|uint32|uint64|uint8|ulong|unichar|ushort|void)\\b"
+    captures:
+      "1":
+        name: "keyword.type.vala"
+  "type-name":
+    patterns: [
+      {
+        match: "(@?[_[:alpha:]][_[:alnum:]]*)\\s*"
+        captures:
+          "1":
+            name: "storage.type.vala"
+      }
+      {
+        match: "(@?[_[:alpha:]][_[:alnum:]]*)\\s*(\\.)"
+        captures:
+          "1":
+            name: "storage.type.vala"
+          "2":
+            name: "punctuation.accessor.vala"
+      }
+      {
+        match: "(\\.)\\s*(@?[_[:alpha:]][_[:alnum:]]*)"
+        captures:
+          "1":
+            name: "punctuation.accessor.vala"
+          "2":
+            name: "storage.type.vala"
+      }
+      {
+        name: "entity.name.type.vala"
+        match: "@?[_[:alpha:]][_[:alnum:]]*"
+      }
+    ]
+  "type-arguments":
+    begin: "<"
+    beginCaptures:
+      "0":
+        name: "punctuation.definition.typeparameters.begin.vala"
+    end: ">"
+    endCaptures:
+      "0":
+        name: "punctuation.definition.typeparameters.end.vala"
+    patterns: [
+      {
+        include: "#comment"
+      }
+      {
+        include: "#type"
+      }
+      {
+        include: "#punctuation-comma"
+      }
+    ]
+  "type-array-suffix":
+    begin: "\\["
+    beginCaptures:
+      "0":
+        name: "punctuation.squarebracket.open.vala"
+    end: "\\]"
+    endCaptures:
+      "0":
+        name: "punctuation.squarebracket.close.vala"
+    patterns: [
+      {
+        include: "#punctuation-comma"
+      }
+    ]
+  "type-nullable-suffix":
+    match: "\\?"
+    captures:
+      "0":
+        name: "storage.type.generic.vala"
+  "punctuation-comma":
+    match: ","
+    name: "punctuation.separator.comma.vala"
+  "punctuation-semicolon":
+    match: ";"
+    name: "punctuation.terminator.statement.vala"
+  "punctuation-accessor":
+    match: "\\."
+    name: "punctuation.accessor.vala"
+  comment:
+    patterns: [
+      {
+        begin: "/\\*"
+        beginCaptures:
+          "0":
+            name: "punctuation.definition.comment.vala"
+        end: "\\*/"
+        endCaptures:
+          "0":
+            name: "punctuation.definition.comment.vala"
+        name: "comment.block.vala"
+      }
+      {
+        begin: "(^\\s+)?(?=//)"
+        beginCaptures:
+          "1":
+            name: "punctuation.whitespace.comment.leading.vala"
+        end: "(?=$)"
+        patterns: [
+          {
+            name: "comment.block.documentation.vala"
+            begin: "(?<!/)///(?!/)"
+            beginCaptures:
+              "0":
+                name: "punctuation.definition.comment.vala"
+            end: "(?=$)"
+          }
+          {
+            name: "comment.line.double-slash.vala"
+            begin: "(?<!/)//(?:(?!/)|(?=//))"
+            beginCaptures:
+              "0":
+                name: "punctuation.definition.comment.vala"
+            end: "(?=$)"
+          }
+        ]
+      }
+    ]
